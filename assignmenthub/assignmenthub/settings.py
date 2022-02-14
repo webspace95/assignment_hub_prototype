@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'studyhelp.urls'
+ROOT_URLCONF = 'assignmenthub.urls'
 
 TEMPLATES = [
     {
@@ -76,7 +76,7 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-WSGI_APPLICATION = 'studyhelp.wsgi.application'
+WSGI_APPLICATION = 'assignmenthub.wsgi.application'
 
 
 # Database
