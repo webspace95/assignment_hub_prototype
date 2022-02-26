@@ -1,9 +1,11 @@
-{% extends 'base_layout.htm'%}
-{% block title %} 
-    Studyhelp - {% for title in sample_title %} {{title.title_description}} {% endfor %}
-{%endblock%}
+{%extends 'base_layout.htm'%}
+{%load static%}
+
+{% block title %}
+    How We Work &mdash; Studyhelp 
+{% endblock %}
 {% block extra_head %}
-{% for meta in sample_meta %}
+{% for meta in index_meta %}
 <meta name="description" content="{{meta.description}}"/>
 <meta name="keywords" content="{{meta.keywords}}"/>
 {% endfor %}
@@ -17,36 +19,45 @@
 {% endfor %}
 
 <!-- Banner -->
-<section id="banner">
-    <div class="inner">
-        <div class="logo"><span class="icon fa-gem"></span></div>
-        {%for brand in brands%}
-        <h2>{{brand.text}}</h2>
-        {%endfor%}
-        {%for header in headers%}
-        <p>{{header.text}}<a href="/create_order/" class="special">Order Now</a></p>
-        {%endfor%}
-    </div>
-</section>
-
-<section id="wrapper">
-    <section id="four" class="wrapper alt style1">
+    <section id="banner">
         <div class="inner">
-            <h2 class="major">Samples</h2>
-            <section class="features">
-                {%for sample in samples%}
-                <article>
-                    <h3 class="major">{{sample.title}}</h3>
-                    <p>{{sample.snippet}}...</p>
-                    <a href="{{sample.file.url}}" class="special">View Paper</a>
-                </article>
-                {%endfor%}
-            </section>
+            <div class="logo"><span class="icon fa-gem"></span></div>
+            {%for brand in brands%}
+            <h2>{{brand.text}}</h2>
+            {%endfor%}
+            {%for header in headers%}
+            <p>{{header.text}}<a href="/create_order/" class="special">Order Now</a></p>
+            {%endfor%}
         </div>
-    </section>  
-</section>
+    </section>
+    <!-- Wrapper -->
+    <section id="wrapper">
+        <!-- One -->
+        {% for text in how_we_work%}
+        <section id="one" class="wrapper spotlight style1">
+            <div class="inner"> 
+                <div class="content">
+                    <h2 class="major">How we Work</h2>
+                    <p>{{text.introduction}}</p>
+                    <p>{{text.body}}</p>
+                </div> 
+            </div>
+        </section>
+        {% endfor %}
+        <!-- Two -->
+        <section id="two" class="wrapper alt  style2">
+            <div class="inner">
+                <h2 class="major">Frequently Asked Questions</h2>
+                <div class="content">
+                    {%for question in questions%}
+                    <h2 class="major">{{question.question}}</h2>
+                    <p>{{question.answer}}</p>
+                    {%endfor%}
+                </div>
+            </div>
+        </section>
+    </section>
 {% endblock %}
-
 {% block footer %}
     <section id="footer">
         <div class="inner">
@@ -99,11 +110,11 @@
                 {%endfor%}
             </ul>
             <ul class="copyright">
-                <li>&copy;<script>document.write(new Date().getFullYear())</script> Study Help. All rights reserved.</li> 
-                <li><a href="/privacy_policy/">Privacy policy</a></li>
+                <li>&copy;<script>document.write(new Date().getFullYear())</script> Study Help. All rights reserved.</li>
+                <li><a href="/privacy_policy/">Privacy Policy</a></li>
+                <li><a href="/how_we_work/">How we work</a></li> 
                 <li><a href="/revision_policy/">Revision policy</a></li>
                 <li><a href="/refund_policy/">Refund policy</a></li>
-                <li><a href="/how_we_work/">How we Work</a></li>
                 <li><a href="/about/">About</a></li>
                 <li><a href="/create_order/">Order</a></li>
                 <li><a href="/samples/">Samples</a></li>

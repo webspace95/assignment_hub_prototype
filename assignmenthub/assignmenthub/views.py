@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from contacts.models import Contact, UserProfile,Whatsapp
 from jobs.models import Order, Sample
+from how_we_work.models import Faq, HowWeWork, HowWeWorkCheckList
+from refund_policy.models import RefundPolicyIntroduction, OrderCancelation, DoubleCharge, ShortageOfWriter, RevisionDeadline, Quality
+from revision_policy.models import Instruction, Introduction, Conclusion, Submission, Deadline
 from order_form_edits.models import Page,AcademicLevel,Spacing,Format,Subject,Day,Type
 from seo.models import AboutMetaField,AboutTitleField,SampleMetaField,SampleTitleField,IndexMetaField,IndexTitleField,PrivacypolicyMetaField,PrivacypolicyTitleField,OrderMetaField,OrderTitleField,DashboardMetaField,DashboardTitleField
 from page_edits.models import HomeHeader,HowWeWorkCheckListItem,HowWeWorkText,BrandName,Address,GmailLink,InstagramAccount,TwitterAccount,FacebookAccount,PrivacyPolicy,PhoneNumber,AboutPage
@@ -52,7 +55,7 @@ def create_ref_code():
 def index_page(request):
 
     headers = HomeHeader.objects.all().order_by('date')
-    how_we_work_texts = HowWeWorkText.objects.all()
+    how_we_work_texts = HowWeWork.objects.all()
     brands = BrandName.objects.all()
     samples = Sample.objects.all()
     addresses = Address.objects.all()
@@ -132,7 +135,7 @@ def about_view(request):
     phone_numbers = PhoneNumber.objects.all()
     abouts = AboutPage.objects.all()
     whatsapp = Whatsapp.objects.all()
-
+    questions = Faq.objects.all()
     about_title = AboutTitleField.objects.all()
     about_meta = AboutMetaField.objects.all()
 
@@ -145,6 +148,7 @@ def about_view(request):
                 'twitter_accounts':twitter_accounts,
                 'phone_numbers':phone_numbers,
                 'abouts':abouts,
+                'questions':questions,
                 'whatsapp':whatsapp,
                 'about_title':about_title,
                 'about_meta':about_meta
@@ -240,14 +244,14 @@ def privacy_policy(request):
 def create_order(request):
     headers = HomeHeader.objects.all().order_by('date')
     brands = BrandName.objects.all()
-    how_we_work_texts = HowWeWorkText.objects.all()
+    how_we_work_texts = HowWeWork.objects.all()
     addresses = Address.objects.all()
     gmail_links = GmailLink.objects.all()
     instagram_accounts = InstagramAccount.objects.all()
     fb_accounts = FacebookAccount.objects.all()
     twitter_accounts = TwitterAccount.objects.all()
     phone_numbers = PhoneNumber.objects.all()
-    steps = HowWeWorkCheckListItem.objects.all()
+    steps = HowWeWorkCheckList.objects.all()
     whatsapp = Whatsapp.objects.all()
     order_title = OrderTitleField.objects.all()
     order_meta = OrderMetaField.objects.all()
@@ -516,4 +520,207 @@ def order_description(request,slug):
         })
     return render(request,"order_description.htm",context)
 
+def how_we_work(request):
+    
+    headers = HomeHeader.objects.all().order_by('date')
+    brands = BrandName.objects.all()
+    addresses = Address.objects.all()
+    gmail_links = GmailLink.objects.all()
+    instagram_accounts = InstagramAccount.objects.all()
+    fb_accounts = FacebookAccount.objects.all()
+    twitter_accounts = TwitterAccount.objects.all()
+    phone_numbers = PhoneNumber.objects.all()
+    abouts = AboutPage.objects.all()
+    whatsapp = Whatsapp.objects.all()
+
+    questions = Faq.objects.all()
+    list_items = HowWeWorkCheckList.objects.all()
+    how_we_work = HowWeWork.objects.all()
+
+    index_title = IndexTitleField.objects.all()
+    index_meta = IndexMetaField.objects.all()
+    
+    context = {
+                'headers':headers,
+                'brands':brands,
+                'addresses':addresses,
+                'gmail_links':gmail_links,
+                'instagram_accounts':instagram_accounts,
+                'fb_accounts':fb_accounts,
+                'list_items':list_items,
+                'questions':questions,
+                'how_we_work':how_we_work,
+                'twitter_accounts':twitter_accounts,
+                'phone_numbers':phone_numbers,
+                'whatsapp':whatsapp,
+                'index_title':index_title,
+                'index_meta':index_meta
+              }
+
+    if request.method == 'POST':
+        form =ContactForm(request.POST)
+        if form.is_valid():
+            
+            #getting values of the form field
+            m_name = form.cleaned_data['name']
+            email_address = form.cleaned_data['email']
+            mail_message = form.cleaned_data['message']
+        
+            try:
+                contact = Contact(name=m_name,email=email_address,message=mail_message)
+                contact.save()
+                messages.success(request,"Message sent succesfully.")
+                return redirect('/how_we_work/')
+
+            except Exception as e:
+                messages.warning(request,"Please enter all the required fields")
+                return redirect('/how_we_work/')
+        else:
+            messages.warning(request,"Plese complete all the required fields")
+            return redirect('/how_we_work/')
+    else:
+        form = ContactForm()
+        context.update({
+            'form':form
+        })
+    return render(request,'how_we_work.htm',context)
+def revision_policy(request):
+    addresses = Address.objects.all()
+    gmail_links = GmailLink.objects.all()
+    instagram_accounts = InstagramAccount.objects.all()
+    fb_accounts = FacebookAccount.objects.all()
+    twitter_accounts = TwitterAccount.objects.all()
+    phone_numbers = PhoneNumber.objects.all()
+    whatsapp = Whatsapp.objects.all()
+
+    index_title = IndexTitleField.objects.all()
+    index_meta = IndexMetaField.objects.all()
+
+    introductions = Introduction.objects.all()
+    conclusions = Conclusion.objects.all()
+    submissions = Submission.objects.all()
+    deadlines = Deadline.objects.all()
+    instructions = Instruction.objects.all()
+
+    brands = BrandName.objects.all()
+    headers = HomeHeader.objects.all().order_by('date')
+    
+    context = {
+                'addresses':addresses,
+                'gmail_links':gmail_links,
+                'instagram_accounts':instagram_accounts,
+                'fb_accounts':fb_accounts,
+                'twitter_accounts':twitter_accounts,
+                'phone_numbers':phone_numbers,
+                'whatsapp':whatsapp,
+                'index_title':index_title,
+                'index_meta':index_meta,
+                'introductions':introductions,
+                'conclusions':conclusions,
+                'submissions':submissions,
+                'deadlines':deadlines,
+                'instructions':instructions,
+                'brands':brands,
+                'headers':headers,
+              }
+
+    if request.method == 'POST':
+        form =ContactForm(request.POST)
+        if form.is_valid():
+            
+            #getting values of the form field
+            m_name = form.cleaned_data['name']
+            email_address = form.cleaned_data['email']
+            mail_message = form.cleaned_data['message']
+        
+            try:
+                contact = Contact(name=m_name,email=email_address,message=mail_message)
+                contact.save()
+                messages.success(request,"Message sent succesfully.")
+                return redirect('/revision_policy/')
+
+            except Exception as e:
+                messages.warning(request,"Please enter all the required fields")
+                return redirect('/revision_policy/')
+        else:
+            messages.warning(request,"Plese complete all the required fields")
+            return redirect('/revision_policy/')
+    else:
+        form = ContactForm()
+        context.update({
+            'form':form
+        })
+    return render(request,'revision_policy.htm',context)
+
+def refund_policy(request):
+    addresses = Address.objects.all()
+    gmail_links = GmailLink.objects.all()
+    instagram_accounts = InstagramAccount.objects.all()
+    fb_accounts = FacebookAccount.objects.all()
+    twitter_accounts = TwitterAccount.objects.all()
+    phone_numbers = PhoneNumber.objects.all()
+    whatsapp = Whatsapp.objects.all()
+
+    index_title = IndexTitleField.objects.all()
+    index_meta = IndexMetaField.objects.all()
+
+    introductions = RefundPolicyIntroduction.objects.all()
+    cancelations = OrderCancelation.objects.all()
+    deadlines = RevisionDeadline.objects.all()
+    qualities = Quality.objects.all()
+    writers = ShortageOfWriter.objects.all()
+    charges = DoubleCharge.objects.all()
+
+    brands = BrandName.objects.all()
+    headers = HomeHeader.objects.all().order_by('date')
+    
+    context = {
+                'addresses':addresses,
+                'gmail_links':gmail_links,
+                'instagram_accounts':instagram_accounts,
+                'fb_accounts':fb_accounts,
+                'twitter_accounts':twitter_accounts,
+                'phone_numbers':phone_numbers,
+                'whatsapp':whatsapp,
+                'index_title':index_title,
+                'index_meta':index_meta,
+
+                'introductions':introductions,
+                'cancelations':cancelations,
+                'qualities':qualities,
+                'deadlines':deadlines,
+                'writers':writers,
+                'charges':charges,
+                
+                'brands':brands,
+                'headers':headers,
+              }
+
+    if request.method == 'POST':
+        form =ContactForm(request.POST)
+        if form.is_valid():
+            
+            #getting values of the form field
+            m_name = form.cleaned_data['name']
+            email_address = form.cleaned_data['email']
+            mail_message = form.cleaned_data['message']
+        
+            try:
+                contact = Contact(name=m_name,email=email_address,message=mail_message)
+                contact.save()
+                messages.success(request,"Message sent succesfully.")
+                return redirect('/refund_policy/')
+
+            except Exception as e:
+                messages.warning(request,"Please enter all the required fields")
+                return redirect('/refund_policy/')
+        else:
+            messages.warning(request,"Plese complete all the required fields")
+            return redirect('/refund_policy/')
+    else:
+        form = ContactForm()
+        context.update({
+            'form':form
+        })
+    return render(request,'refund_policy.htm',context)
 
