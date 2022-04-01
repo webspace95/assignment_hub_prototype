@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, Sample
+from .models import Order, Sample, Writer, OrderFile
 from django.contrib.auth.models import Group
 
 # Register your models here.
@@ -7,6 +7,8 @@ from django.contrib.auth.models import Group
 admin.site.register(Order)
 admin.site.register(Sample)
 admin.site.unregister(Group)
+admin.site.register(Writer)
+admin.site.register(OrderFile)
 
 
 admin.site.site_header = "Studyhelp Admin"

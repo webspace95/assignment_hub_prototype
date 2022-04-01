@@ -13,6 +13,20 @@ PAYMENT_COMPLETE_CHOICES = (
 )
 
 # Create your models here.
+class Writer(models.Model):
+
+    name = models.CharField(max_length=50,blank=True,null=True)
+    phone = models.CharField(max_length=50,blank=True,null=True)
+
+    def __str__(self):
+        return self.name
+
+class OrderFile(models.Model):
+    name = models.CharField(blank=True,null=True,max_length=50)
+    file = models.FileField(max_length=100,blank=True,null=True)
+
+    def __str__(self):
+        return self.name
 
 class Order(models.Model):
 
@@ -48,6 +62,10 @@ class Order(models.Model):
 
     #boolean fields
     payment_complete = models.CharField(max_length=1,choices=PAYMENT_COMPLETE_CHOICES,blank=True,null=True,default="F")
+
+    #file field
+    writer =  models.ForeignKey(Writer,  on_delete=models.CASCADE, blank=True,null=True)
+    order_files = models.ManyToManyField(OrderFile, blank=True)
 
     def __str__(self):
         return self.reference_code

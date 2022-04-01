@@ -1,17 +1,17 @@
 from django.shortcuts import render,redirect
 from .forms import ContactForm
-from order_form_edits.forms import OrderForm
+from order_form_edits.forms import OrderForm,OrderFileForm
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from contacts.models import Contact, UserProfile,Whatsapp
-from jobs.models import Order, Sample
+from jobs.models import Order, Sample, OrderFile,Writer
 from how_we_work.models import Faq, HowWeWork, HowWeWorkCheckList
 from refund_policy.models import RefundPolicyIntroduction, OrderCancelation, DoubleCharge, ShortageOfWriter, RevisionDeadline, Quality
 from revision_policy.models import Instruction, Introduction, Conclusion, Submission, Deadline
 from order_form_edits.models import Page,AcademicLevel,Spacing,Format,Subject,Day,Type
 from seo.models import AboutMetaField,AboutTitleField,SampleMetaField,SampleTitleField,IndexMetaField,IndexTitleField,PrivacypolicyMetaField,PrivacypolicyTitleField,OrderMetaField,OrderTitleField,DashboardMetaField,DashboardTitleField
-from page_edits.models import HomeHeader,HowWeWorkCheckListItem,HowWeWorkText,BrandName,Address,GmailLink,InstagramAccount,TwitterAccount,FacebookAccount,PrivacyPolicy,PhoneNumber,AboutPage
+from page_edits.models import HomeHeader,HowWeWorkCheckListItem,HowWeWorkText,BrandName,Address,GmailLink,InstagramAccount,TwitterAccount,FacebookAccount,PhoneNumber,AboutPage
 from order_form_edits.forms import ACADEMIC_CHOICES,SPACING_CHOICES,SUBJECT_CHOICES,TYPE_CHOICES,FORMAT_CHOICES,DAY_CHOICES,PAGE_CHOICES
 from django.contrib import messages
 from services.models import AssignmentWritingService, DissertationAndThesisHelp, ProofReadingService, ContentWritingService
@@ -182,63 +182,67 @@ def about_view(request):
         })
     return render(request,'about.htm',context)
 
-def privacy_policy(request):
-
+@login_required()
+def order_files(request,slug):
+    order = Order.objects.get(reference_code=slug)
+    headers = HomeHeader.objects.all().order_by('date')
+    how_we_work_texts = HowWeWork.objects.all()
     addresses = Address.objects.all()
     gmail_links = GmailLink.objects.all()
     instagram_accounts = InstagramAccount.objects.all()
     fb_accounts = FacebookAccount.objects.all()
     twitter_accounts = TwitterAccount.objects.all()
     phone_numbers = PhoneNumber.objects.all()
-    privacy_policies = PrivacyPolicy.objects.all()
     whatsapp = Whatsapp.objects.all()
-
-    privacy_title = PrivacypolicyTitleField.objects.all()
-    privacy_meta = PrivacypolicyMetaField.objects.all()
-
+    order_title = OrderTitleField.objects.all()
+    order_meta = OrderMetaField.objects.all()
+    user = request.user
 
     context = {
-            'addresses':addresses,
-            'gmail_links':gmail_links,
-            'instagram_accounts':instagram_accounts,
-            'fb_accounts':fb_accounts,
-            'twitter_accounts':twitter_accounts,
-            'phone_numbers':phone_numbers,
-            'privacy_policies':privacy_policies,
-            'whatsapp':whatsapp,
-            'privacy_title':privacy_title,
-            'privacy_meta':privacy_meta
-            }
+        'order':order,
+        'headers':headers,
+        'how_we_work_texts':how_we_work_texts,
+        'addresses':addresses,
+        'gmail_links':gmail_links,
+        'instagram_accounts':instagram_accounts,
+        'fb_accounts':fb_accounts,
+        'twitter_accounts':twitter_accounts,
+        'phone_numbers':phone_numbers,
+        'whatsapp':whatsapp,
+        'order_title':order_title,
+        'order_meta':order_meta,
+        'user':user,
+    }
 
     if request.method == 'POST':
-        form =ContactForm(request.POST)
+        form = OrderFileForm(request.POST,request.FILES)
+
         if form.is_valid():
-            
-            #getting values of the form field
-            m_name = form.cleaned_data['name']
-            email_address = form.cleaned_data['email']
-            mail_message = form.cleaned_data['message']
-        
+
+            doc = request.FILES #returns a dict-like object
+            m_file = doc['docfile']
+
             try:
-                contact = Contact(name=m_name,email=email_address,message=mail_message)
-                contact.save()
-                messages.success(request,"Message sent succesfully.")
-                return redirect('/privacy_policy/')
+                file = OrderFile(name= m_file.get_name(),file=m_file)
+                file.save()
+                order.order_files.add(file)
+                order.save()
 
+                messages.success(request,"File uploaded successfully")
+                return redirect('/order_files/'+order.reference_code+'/')
             except Exception as e:
-                messages.warning(request,"Please enter all the required fields")
-                return redirect('/privacy_policy/')
+                messages.warning(request,'An error occured while uploading the file. Please try again')
+                print(e)
+                return redirect('/order_files/'+order.reference_code+'/')
         else:
-            messages.warning(request,"Plese complete all the required fields")
-            return redirect('/privacy_policy/')
+            messages.warning(request,'An error occured while uploading the file. Please try again')
+            return redirect('/order_files/'+order.reference_code+'/')
     else:
-        form = ContactForm()
-        context.update({
-            'form':form
-        })
-    return render(request,'privacy_policy.htm',context)
-
-
+        form = OrderFileForm()
+        context.update(
+            {'form':form}
+        )
+    return render(request,'order_files.htm',context)
 
 @login_required()
 def create_order(request):

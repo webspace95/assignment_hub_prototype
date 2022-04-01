@@ -100,17 +100,7 @@ class Address(models.Model):
 
     def __str__(self):
         return self.p_o_box
-
-class PrivacyPolicy(models.Model):
-
-    name = models.CharField(max_length=50, default="privacy policy")
-    body = models.TextField(default="")
-    
-    save_one_only('PrivacyPolicy')
-
-    def __str__(self):
-        return self.name
-    
+   
 class RefundPolicy(models.Model):
     
     name = models.CharField(max_length=50, default="refund policy")
