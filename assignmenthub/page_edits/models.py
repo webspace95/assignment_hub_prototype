@@ -12,7 +12,7 @@ def save_one_only(model_name):
 
 
 class HomeHeader(models.Model):
-
+    id = models.AutoField(primary_key=True)
     text = models.TextField()
     date = models.DateField(auto_now_add=True)
     
@@ -22,7 +22,7 @@ class HomeHeader(models.Model):
         return self.text
 
 class HowWeWorkText(models.Model):
-
+    id = models.AutoField(primary_key=True)
     introduction = models.TextField()
     body = models.TextField(blank=True,null=True)
     date = models.DateField(auto_now_add=True)
@@ -35,7 +35,7 @@ class HowWeWorkText(models.Model):
 
 
 class BrandName(models.Model):
-
+    id = models.AutoField(primary_key=True)
     text = models.CharField(max_length=20)
 
     save_one_only('BrandName')
@@ -44,7 +44,7 @@ class BrandName(models.Model):
         return self.text
 
 class GmailLink(models.Model):
-
+    id = models.AutoField(primary_key=True)
     link = models.EmailField( max_length=254)
 
     save_one_only('GmailLink')
@@ -54,7 +54,7 @@ class GmailLink(models.Model):
     
 
 class PhoneNumber(models.Model):
-
+    id = models.AutoField(primary_key=True)
     name = models.TextField(default="phone number")
     phone = models.CharField(max_length=50)
 
@@ -65,7 +65,7 @@ class PhoneNumber(models.Model):
     
 
 class TwitterAccount(models.Model):
-
+    id = models.AutoField(primary_key=True)
     twitter = models.CharField(max_length=100)
 
     save_one_only('TwitterAccount')
@@ -74,7 +74,7 @@ class TwitterAccount(models.Model):
         return self.twitter
 
 class FacebookAccount(models.Model):
-
+    id = models.AutoField(primary_key=True)
     facebook = models.CharField(max_length=100)
 
     save_one_only('FacebookAccount')
@@ -83,7 +83,7 @@ class FacebookAccount(models.Model):
         return self.facebook   
 
 class InstagramAccount(models.Model):
-
+    id = models.AutoField(primary_key=True)
     ig = models.CharField(max_length=100)
 
     save_one_only('InstagramAccount')
@@ -92,7 +92,7 @@ class InstagramAccount(models.Model):
         return self.ig
 
 class Address(models.Model):
-
+    id = models.AutoField(primary_key=True)
     p_o_box = models.CharField( max_length=50)
     location = models.CharField(max_length=50)
 
@@ -102,7 +102,7 @@ class Address(models.Model):
         return self.p_o_box
    
 class RefundPolicy(models.Model):
-    
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, default="refund policy")
     heading = models.CharField( max_length=50)
     sub_heading = models.CharField( max_length=50)
@@ -114,7 +114,7 @@ class RefundPolicy(models.Model):
         return self.name
 
 class AboutPage(models.Model):
-
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50,default="About page")
     heading = models.CharField(max_length=50)
     summary = models.CharField(max_length=50)
@@ -127,7 +127,7 @@ class AboutPage(models.Model):
         return self.name
     
 class WhatsappNumber(models.Model):
-    
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50,default="whatsapp")
     number = models.CharField(max_length=50)
 
@@ -137,6 +137,7 @@ class WhatsappNumber(models.Model):
         return self.name
 
 class HowWeWorkCheckListItem(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):

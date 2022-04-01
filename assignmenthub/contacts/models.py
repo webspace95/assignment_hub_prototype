@@ -14,7 +14,7 @@ def save_one_only(model_name):
         return super(model_name, self).save(*args, **kwargs)
 
 class Contact (models.Model):
-
+    id = models.AutoField(primary_key=True)
     name = models.CharField( max_length=50)
     email = models.EmailField( max_length=254)
     message = models.TextField()
@@ -25,7 +25,7 @@ class Contact (models.Model):
         return self.name
 
 class Whatsapp (models.Model):
-    
+    id = models.AutoField(primary_key=True)
     number = models.CharField(max_length=50)
 
     save_one_only("Whatsapp")
@@ -36,7 +36,7 @@ class Whatsapp (models.Model):
         
 
 class UserProfile(models.Model):
-
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     orders = models.ManyToManyField(Order, blank=True)
 
